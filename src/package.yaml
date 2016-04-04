@@ -1,9 +1,9 @@
 descriptor-schema-version: "2.0"
 info:
   author-link: "http://www.cisco.com/"
-  author-name: "Cisco Rio Innovation Center"
-  description: "Demo IOx App talking with ModBus Slave"
-  name: "iox_modbus_app"
+  author-name: "Davi Garcia (davigar@cisco.com)"
+  description: "Demo IOx App talking with sensor through RS232 serial interface."
+  name: "serial_mqtt_app"
   version: "0.2"
 
 app:
@@ -12,8 +12,8 @@ app:
     profile: c1.small
     devices:
       -
-        device-id: iox_modbus_app
-        label: demo
+        device-id: serial_mqtt_app
+        label: serial_mqtt_app
         type: serial
         usage: "Sensor Interface"
 
