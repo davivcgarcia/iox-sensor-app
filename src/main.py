@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) <year> <copyright holders>
+# Copyright (c) 2016 Davi Garcia (davigar@cisco.com)
 #
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,17 +27,13 @@ import random
 from time import sleep, time
 from paho.mqtt import publish
 
-config = {
+CONFIG = {
   "mqtt-address": "broker.hivemq.com",
   "mqtt-port": 1883,
   "mqtt-topic": "cisco/davigar/ir829",
   "pooling-internal": 15,
   "serial-interface": "/dev/ttyS1"
 }
-
-def load_config(filename='setup.json'):
-    config_file = open(filename)
-    return json.loads(config_file.read())
 
 def collect_sensor_data():
     try:
@@ -53,23 +49,23 @@ def collect_sensor_data():
         print('Unable to collect data from sensor. Returning None!')
         return None
 
-def publish_data(data, config):
+def publish_data(data):
     try:
-        publish.single(config['mqtt-topic'], data, hostname=config['mqtt-address'], port=config['mqtt-port'])
+        publish.single(CONFIG['mqtt-topic'], data, hostname=CONFIG['mqtt-address'], port=CONFIG['mqtt-port'])
         print('Published MQTT message!')
     except IOError:
         print('Unable to publish MQTT message. Skiping this iteration!')
 
-def run(config):
+def run(interval):
     while True:
         data = collect_sensor_data()
-        publish_data(data, config)
-        print('Sleeping for %s seconds.' % config['pooling-internal'])
-        sleep(config['pooling-internal'])
+        publish_data(data)
+        print('Sleeping for %s seconds.' % interval)
+        sleep(interval)
 
 
 if __name__ == '__main__':
     try:
-        run(config)
+        run(CONFIG['pooling-internal'])
     except KeyboardInterrupt:
         print('Interrupted!')
