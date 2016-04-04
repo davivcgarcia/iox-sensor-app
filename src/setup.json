@@ -1,0 +1,7 @@
+{
+  "mqtt-address": "broker.hivemq.com",
+  "mqtt-port": 1883,
+  "mqtt-topic": "cisco/davigar/ir829",
+  "pooling-internal": 15,
+  "serial-interface": "/dev/ttyS1"
+}

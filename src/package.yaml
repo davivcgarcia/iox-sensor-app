@@ -1,0 +1,35 @@
+descriptor-schema-version: "2.0"
+info:
+  author-link: "http://www.cisco.com/"
+  author-name: "Cisco Rio Innovation Center"
+  description: "Demo IOx App talking with ModBus Slave"
+  name: "iox_modbus_app"
+  version: "0.1"
+
+app:
+  type: paas
+  resources:
+    profile: c1.small
+    devices:
+      -
+        device-id: iox_modbus_app
+        label: demo
+        type: serial
+        usage: "ModBus Serial Interface"
+
+    network:
+     -
+       interface-name: eth0
+       ports:
+         tcp:
+           - 9000
+    recommendations:
+      -
+        description: "This is a sample of recomendation."
+        label: "50 Sensors"
+        profile: c1.small
+
+  startup:
+    runtime: python
+    runtime-version: 2.7.3
+    target: main.py
