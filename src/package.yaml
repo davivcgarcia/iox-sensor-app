@@ -4,7 +4,7 @@ info:
   author-name: "Cisco Rio Innovation Center"
   description: "Demo IOx App talking with ModBus Slave"
   name: "iox_modbus_app"
-  version: "0.1"
+  version: "0.2"
 
 app:
   type: paas
@@ -15,7 +15,7 @@ app:
         device-id: iox_modbus_app
         label: demo
         type: serial
-        usage: "ModBus Serial Interface"
+        usage: "Sensor Interface"
 
     network:
      -

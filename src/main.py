@@ -23,49 +23,51 @@
 #
 
 import json
-import random
+import serial
 from time import sleep, time
 from paho.mqtt import publish
 
-CONFIG = {
-  "mqtt-address": "broker.hivemq.com",
-  "mqtt-port": 1883,
-  "mqtt-topic": "cisco/davigar/ir829",
-  "pooling-internal": 15,
-  "serial-interface": "/dev/ttyS1"
+
+SERIAL_DEVICE = serial.Serial(
+    port='/dev/ttyS1',
+    baudrate=19200,
+    bytesize=serial.EIGHTBITS,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    timeout=2
+)
+
+MQTT_CONFIG = {
+    "hostname": "192.168.1.6",
+    "port": 1883,
+    "topic": "cisco/davigar/ir829-iox-demo",
+    "publish-interval": 5,
 }
+
 
 def collect_sensor_data():
     try:
-        sensor = dict()
-        sensor['timestamp'] = time()
-        sensor['temperature'] =  random.randrange(0, 100)
-        sensor['humidity'] = random.randrange(0, 100)
-        sensor['alarm'] = random.choice([True, False])
-        json_string = json.dumps(sensor)
-        print('Sensor data collected: %s' % json_string)
-        return json_string
-    except:
-        print('Unable to collect data from sensor. Returning None!')
+        sensor_data = SERIAL_DEVICE.readline()
+        return sensor_data
+    except serial.SerialTimeoutException:
         return None
 
 def publish_data(data):
     try:
-        publish.single(CONFIG['mqtt-topic'], data, hostname=CONFIG['mqtt-address'], port=CONFIG['mqtt-port'])
-        print('Published MQTT message!')
+        publish.single(MQTT_CONFIG['topic'], data, hostname=MQTT_CONFIG['hostname'], port=MQTT_CONFIG['port'])
     except IOError:
-        print('Unable to publish MQTT message. Skiping this iteration!')
+        pass
 
 def run(interval):
     while True:
         data = collect_sensor_data()
-        publish_data(data)
-        print('Sleeping for %s seconds.' % interval)
+        if data is not None:
+            publish_data(data)
         sleep(interval)
 
 
 if __name__ == '__main__':
     try:
-        run(CONFIG['pooling-internal'])
+        run(MQTT_CONFIG['publish-interval'])
     except KeyboardInterrupt:
         print('Interrupted!')
