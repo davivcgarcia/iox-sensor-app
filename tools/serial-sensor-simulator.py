@@ -37,12 +37,15 @@ serial_interface = serial.Serial(
 )
 
 while True:
-	sensor = dict()
-	sensor['timestamp'] = time()
-	sensor['temperature'] =  random.randrange(14, 40)
-	sensor['humidity'] = random.randrange(40, 70)
-	json_string = json.dumps(sensor) + '\n'
-	serial_interface.write(json_string)
-	sleep(2)
+    sensor = dict()
+    sensor['timestamp'] = time()
+    sensor['analog0'] =  random.randrange(14, 40)
+    sensor['analog1'] = random.randrange(40, 70)
+    sensor['analog2'] = (sensor['analog0'] + sensor['analog1']) % 100
+    sensor['digital0'] = random.choice([True, False])
+    sensor['digital1'] = not sensor['digital0']
+    json_string = json.dumps(sensor) + '\n'
+    serial_interface.write(json_string)
+    sleep(2)
 
 serial_interface.close()
